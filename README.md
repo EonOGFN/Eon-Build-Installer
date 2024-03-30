@@ -4,4 +4,4 @@
 - Made for **[Eon](https://discord.gg/eonfn)** - Eon's official Discord Server
 - a simple build installer for your desired Fortnite version. Feel free to contribute.
 ---
-Credit goes to Ender, BLK, and **[Easy Installer V2](https://github.com/simplyblk/EasyInstallerV2)**
+Credit goes to Ender, BLK, other contributors, and **[Easy Installer V2](https://github.com/simplyblk/EasyInstallerV2)**.
