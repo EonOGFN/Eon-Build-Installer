@@ -21,7 +21,7 @@ namespace Eon_Installer.Installer
             if (!Directory.Exists(resultPath))
                 Directory.CreateDirectory(resultPath);
 
-            SemaphoreSlim semaphore = new SemaphoreSlim(Environment.ProcessorCount * 2);
+            SemaphoreSlim semaphore = new SemaphoreSlim(12);
 
             await Task.WhenAll(manifest.Chunks.Select(async chunkedFile =>
             {
@@ -29,7 +29,7 @@ namespace Eon_Installer.Installer
 
                 try
                 {
-                    WebClient webClient = new WebClient();
+                    WebClient httpClient = new WebClient();
 
                     string outputFilePath = Path.Combine(resultPath, chunkedFile.File);
                     var fileInfo = new FileInfo(outputFilePath);
@@ -52,7 +52,7 @@ namespace Eon_Installer.Installer
                             try
                             {
                                 string chunkUrl = Globals.SeasonBuildVersion + $"/{version}/" + chunkId + ".chunk";
-                                var chunkData = await webClient.DownloadDataTaskAsync(chunkUrl);
+                                var chunkData = await httpClient.DownloadDataTaskAsync(chunkUrl);
 
                                 byte[] chunkDecompData = new byte[Globals.CHUNK_SIZE + 1];
                                 int bytesRead;
@@ -68,7 +68,7 @@ namespace Eon_Installer.Installer
                                     Interlocked.Add(ref chunkCompletedBytes, bytesRead);
 
                                     double progress = (double)completedBytes / totalBytes * 100;
-                                    string progressMessage = $"\rDownload Status: {ConvertStorageSize.FormatBytesWithSuffix(completedBytes)} / {ConvertStorageSize.FormatBytesWithSuffix(totalBytes)} ({progress:F2}%)";
+                                    string progressMessage = $"\rDownloaded: {ConvertStorageSize.FormatBytesWithSuffix(completedBytes)} / {ConvertStorageSize.FormatBytesWithSuffix(totalBytes)} ({progress:F2}%)";
 
                                     int padding = progressLength - progressMessage.Length;
                                     if (padding > 0)
@@ -94,8 +94,7 @@ namespace Eon_Installer.Installer
                 }
             }));
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("\rDownload Progress: Completed!");
+            Console.WriteLine("\n\nFinished Downloading.\nPress any key to exit!");
             Thread.Sleep(100);
             Console.ReadKey();
         }

@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System.IO.Compression;
 using System.Net;
+using static Eon_Installer.Installer.FileManifest;
 
 namespace Eon_Installer.Installer
 {
@@ -11,12 +12,12 @@ namespace Eon_Installer.Installer
             var httpClient = new WebClient();
 
             List<string> versions = JsonConvert.DeserializeObject<List<string>>(httpClient.DownloadString(Globals.SeasonBuildVersion + "/versions.json"));
+
             Console.Clear();
 
             Console.Title = "Eon 11.31 Build Installer";
-            Console.Write("Are you sure you want to install Fortnite Version ");
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.Write("11.31");
+            Console.Write("Are you sure you want to install Fortnite Version 11.31");
+
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("?\nPlease type ");
             Console.ForegroundColor = ConsoleColor.Green;
@@ -47,15 +48,13 @@ namespace Eon_Installer.Installer
                     return;
             }
 
-            var targetVersion = versions[FN11].Split("-")[1];
-            var manifestUrl = $"{Globals.SeasonBuildVersion}/{targetVersion}/{targetVersion}.manifest";
-            var manifest = JsonConvert.DeserializeObject<FileManifest.ManifestFile>(httpClient.DownloadString(manifestUrl));
 
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            var targetVersion = versions[FN11].Split("-")[1];
+            var manifest = JsonConvert.DeserializeObject<ManifestFile>(httpClient.DownloadString(Globals.SeasonBuildVersion + $"/{targetVersion}/{targetVersion}.manifest"));
+
             Console.Write("Enter your desired download path for Fortnite Version 11.31: ");
-            Console.ForegroundColor = ConsoleColor.White;
             var targetPath = Console.ReadLine();
-            Console.WriteLine();
+            Console.Write("\n");
 
             Installer.Download(manifest, targetVersion, targetPath).GetAwaiter().GetResult();
         }

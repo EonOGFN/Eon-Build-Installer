@@ -8,7 +8,7 @@ namespace Eon_Installer.Installer
 {
     internal class Globals
     {
-        public const string SeasonBuildVersion = "https://manifest.fnbuilds.services";
+        public const string SeasonBuildVersion = "https://manifest.simplyblk.xyz";
         public const int CHUNK_SIZE = 536870912 / 8;
     }
 }
