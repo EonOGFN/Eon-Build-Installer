@@ -47,7 +47,7 @@ namespace Eon_Installer.Installer
 
                         Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
 
-                        using FileStream outputStream = new FileStream(outputFilePath, FileMode.Create, FileAccess.Write, FileShare.None);
+                        using FileStream outputStream = new FileStream(outputFilePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true);
 
                         List<Task> chunkDownloadTasks = chunkedFile.ChunksIds.Select(chunkId => DownloadChunk(version, chunkId, outputStream, ref completedBytes, totalBytes)).ToList();
                         await Task.WhenAll(chunkDownloadTasks);
@@ -78,7 +78,7 @@ namespace Eon_Installer.Installer
                     using MemoryStream memoryStream = new MemoryStream(chunkData);
                     using GZipStream decompressionStream = new GZipStream(memoryStream, CompressionMode.Decompress);
 
-                    byte[] buffer = new byte[Globals.CHUNK_SIZE];
+                    byte[] buffer = new byte[4096];
                     int bytesRead;
                     while ((bytesRead = await decompressionStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
                     {
