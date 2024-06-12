@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,19 +6,21 @@ using System.Threading.Tasks;
 
 namespace Eon_Installer.Installer
 {
-    internal class ConvertStorageSize
+    internal static class ConvertStorageSize
     {
         public static string FormatBytesWithSuffix(long bytes)
         {
-            string[] Suffix = { "B", "KB", "MB", "GB", "TB" };
-            int i;
-            double dblSByte = bytes;
-            for (i = 0; i < Suffix.Length && bytes >= 1024; i++, bytes /= 1024)
+            string[] suffixes = { "B", "KB", "MB", "GB", "TB" };
+            int counter = 0;
+            decimal number = bytes;
+
+            while (Math.Round(number / 1024) >= 1)
             {
-                dblSByte = bytes / 1024.0;
+                number /= 1024;
+                counter++;
             }
 
-            return string.Format("{0:0.##} {1}", dblSByte, Suffix[i]);
+            return $"{number:n1}{suffixes[counter]}";
         }
     }
 }
